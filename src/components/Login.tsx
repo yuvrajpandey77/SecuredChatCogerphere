@@ -3,6 +3,7 @@ import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
+import Logo from "./ui/logo";
 
 const Login: React.FC = () => {
   const { login } = useAuth();
@@ -52,20 +53,19 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-4 space-y-8 bg-gradient-to-br from-purple-50 to-pink-50">
+    <div className="flex flex-col items-center justify-center min-h-screen p-4 space-y-8 bg-background/80 from-purple-50 to-pink-50">
       <div className="text-center space-y-4">
-        <img 
-          src="/lovable-uploads/a4ad0ddd-0884-4ced-9bf7-e01616e43974.png" 
-          alt="Cogerphere Logo" 
-          className="w-32 h-32 mx-auto"
-        />
-        <h1 className="text-3xl font-bold text-purple-900">Cogerphere</h1>
-        <p className="text-gray-600">Log in to start chatting with your assistant</p>
+        <div  className="w-32 h-32 py-2  mx-auto">
+           
+          <Logo />
+        </div>
+        <h1 className="text-3xl font-bold text-foreground">Cogerphere</h1>
+        <p className="text-muted-foreground">Log in to start chatting with your assistant</p>
       </div>
       
-      <div className="w-full max-w-sm space-y-4 p-6 bg-white shadow-md rounded-lg">
+      <div className="w-full max-w-sm space-y-4 p-6 bg-card shadow-md rounded-lg">
         <h2 className="text-xl font-medium text-center">Welcome!</h2>
-        <p className="text-sm text-gray-500 text-center">
+        <p className="text-sm text-muted-foreground text-center">
           Enter your details to continue
         </p>
         
