@@ -8,7 +8,7 @@ import { ChatProvider } from "@/context/ChatContext";
 import { useAuth } from "@/context/AuthContext";
 import Login from "@/components/Login";
 import ModelSelection from "@/components/ModelSelection";
-
+import { Analytics } from "@vercel/analytics/react";
 const Index = () => {
   const { isAuthenticated } = useAuth();
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
@@ -42,7 +42,7 @@ const Index = () => {
           isMobileOpen={isMobileSidebarOpen}
           onCloseMobile={closeMobileSidebar}
         />
-        
+        <Analytics />
         {/* Mobile sidebar overlay */}
         {isMobileSidebarOpen && (
           <>
