@@ -34,9 +34,9 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({ messages, isLoading }) => {
                 <div className="anime-card p-4">
                   <h3 className="font-medium mb-2">Example Questions</h3>
                   <ul className="text-left text-sm space-y-2">
-                    <li>• Tell me about the history of anime</li>
-                    <li>• What are some classic anime series?</li>
-                    <li>• Who are the most influential anime directors?</li>
+                    <li>• How can I improve my coding skills?</li>
+                    <li>• What are the latest trends in AI and machine learning?</li>
+                    <li>• Can you explain the concept of blockchain technology?</li>
                   </ul>
                 </div>
                 <div className="anime-card p-4">
