@@ -52,7 +52,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isMobileOpen, onCloseMobile }) => {
               <AvatarFallback>CG</AvatarFallback>
             </Avatar>
             <h1 className="text-xl font-bold text-sidebar-foreground">
-              Cogerphere
+              -Cogerphere
             </h1>
           </div>
         </div>
