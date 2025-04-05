@@ -32,9 +32,9 @@ const ChatInput: React.FC<ChatInputProps> = ({
   };
 
   return (
-    <div className="p-4 border-t border-border bg-background/80 backdrop-blur-sm">
-      <div className="max-w-3xl mx-auto">
-        <div className="relative">
+    <div className="p-4  border-t border-border bg-background/80 backdrop-blur-sm">
+      <div className="max-w-2xl mx-auto ">
+        <div className="relative ">
           <Textarea
             value={message}
             onChange={(e) => setMessage(e.target.value)}

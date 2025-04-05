@@ -55,36 +55,38 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({ messages, isLoading }) => {
             <div
               key={message.id}
               className={cn(
-                "flex items-start space-x-4 animate-fade-in",
-                message.role === "user" ? "justify-start" : "justify-start"
+                "w-full",
+                message.role === "user" ? "flex justify-end" : "flex justify-start"
               )}
             >
               <div
                 className={cn(
-                  "p-2 rounded-full flex items-center justify-center",
-                  message.role === "user"
-                    ? "bg-secondary text-secondary-foreground"
-                    : "bg-primary text-primary-foreground"
+                  "flex items-start space-x-4 animate-fade-in",
+                  message.role === "user" ? "flex-row-reverse space-x-reverse" : ""
                 )}
               >
-                {message.role === "user" ? (
-                  <User size={16} />
-                ) : (
-                  <Bot size={16} />
-                )}
-              </div>
-              <div
-                className={cn(
-                  "anime-card p-4 max-w-[85%]",
-                  message.role === "user"
-                    ? "bg-secondary/80 border-secondary"
-                    : "bg-card/80"
-                )}
-              >
-                <div className="prose prose-sm max-w-none dark:prose-invert text-left">
-                  <ReactMarkdown>
-                    {message.content}
-                  </ReactMarkdown>
+                <div
+                  className={cn(
+                    "p-2 rounded-full flex items-center justify-center",
+                    message.role === "user"
+                      ? "bg-secondary text-secondary-foreground"
+                      : "bg-primary text-primary-foreground"
+                  )}
+                >
+                  {message.role === "user" ? <User size={16} /> : <Bot size={16} />}
+                </div>
+
+                <div
+                  className={cn(
+                    "anime-card p-4 max-w-[85%]",
+                    message.role === "user"
+                      ? "bg-secondary/80 border-secondary"
+                      : "bg-card/80"
+                  )}
+                >
+                  <div className="prose prose-sm max-w-none dark:prose-invert text-left">
+                    <ReactMarkdown>{message.content}</ReactMarkdown>
+                  </div>
                 </div>
               </div>
             </div>
