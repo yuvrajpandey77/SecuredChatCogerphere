@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext, useEffect } from "react";
+import React, { createContext, useState, useContext, useEffect, useRef } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { Chat, Message, ApiKeyConfig } from "@/types/chat";
 import { useToast } from "@/components/ui/use-toast";
@@ -6,15 +6,16 @@ import { useToast } from "@/components/ui/use-toast";
 interface ChatContextProps {
   chats: Chat[];
   currentChatId: string | null;
-  apiConfig: ApiKeyConfig;
-  setApiConfig: (config: ApiKeyConfig) => void;
   isLoading: boolean;
+  isLoadingConfig: boolean; // New loading state for config
+  apiConfig: ApiKeyConfig;
   createNewChat: () => string;
   selectChat: (chatId: string) => void;
   deleteChat: (chatId: string) => void;
-  sendMessage: (content: string) => Promise<void>;
   clearChats: () => void;
-  getCurrentChat: () => Chat | undefined;
+  sendMessage: (content: string) => Promise<void>;
+  setApiConfig: (config: ApiKeyConfig) => void;
+  stopStreaming: () => void;
 }
 
 const ChatContext = createContext<ChatContextProps | undefined>(undefined);
@@ -32,10 +33,14 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
   const [currentChatId, setCurrentChatId] = useState<string | null>(null);
   const [apiConfig, setApiConfigState] = useState<ApiKeyConfig>({
     apiKey: "",
-    model: "openai/gpt-4o-mini",
+    model: "mistralai/mistral-small-3.2-24b-instruct:free",
   });
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingConfig, setIsLoadingConfig] = useState(true); // New loading state for config
   const { toast } = useToast();
+
+  // Add ref for AbortController to stop streaming
+  const abortControllerRef = useRef<AbortController | null>(null);
 
   useEffect(() => {
     // Load data from localStorage
@@ -73,26 +78,57 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
 
     if (savedApiConfig) {
       try {
-        setApiConfigState(JSON.parse(savedApiConfig));
+        const config = JSON.parse(savedApiConfig);
+        // Preserve API key but force Mistral as model
+        const updatedConfig = {
+          apiKey: config.apiKey || "",
+          model: "mistralai/mistral-small-3.2-24b-instruct:free"
+        };
+        setApiConfigState(updatedConfig);
+        // Save the updated config back to localStorage
+        localStorage.setItem(LOCAL_STORAGE_KEYS.API_CONFIG, JSON.stringify(updatedConfig));
       } catch (error) {
         console.error("Failed to parse saved API config:", error);
+        // Set default model if parsing fails
+        setApiConfigState({
+          apiKey: "",
+          model: "mistralai/mistral-small-3.2-24b-instruct:free",
+        });
       }
+    } else {
+      // Set default model if no config exists
+      setApiConfigState({
+        apiKey: "",
+        model: "mistralai/mistral-small-3.2-24b-instruct:free",
+      });
     }
+
+    // Set loading to false after all config is loaded
+    setIsLoadingConfig(false);
   }, [toast]);
 
+  // Save chats and currentChatId to localStorage when they change
   useEffect(() => {
-    // Save data to localStorage whenever it changes
     localStorage.setItem(LOCAL_STORAGE_KEYS.CHATS, JSON.stringify(chats));
-    
+  }, [chats]);
+
+  useEffect(() => {
     if (currentChatId) {
       localStorage.setItem(LOCAL_STORAGE_KEYS.CURRENT_CHAT_ID, currentChatId);
     }
-    
-    localStorage.setItem(LOCAL_STORAGE_KEYS.API_CONFIG, JSON.stringify(apiConfig));
-  }, [chats, currentChatId, apiConfig]);
+  }, [currentChatId]);
+
+  // Save API config to localStorage when it changes
+  useEffect(() => {
+    if (!isLoadingConfig) {
+      localStorage.setItem(LOCAL_STORAGE_KEYS.API_CONFIG, JSON.stringify(apiConfig));
+    }
+  }, [apiConfig, isLoadingConfig]);
 
   const setApiConfig = (config: ApiKeyConfig) => {
     setApiConfigState(config);
+    // Save to localStorage
+    localStorage.setItem(LOCAL_STORAGE_KEYS.API_CONFIG, JSON.stringify(config));
     toast({
       title: "API Key Updated",
       description: "Your API configuration has been updated",
@@ -136,34 +172,30 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
   const clearChats = () => {
     setChats([]);
     setCurrentChatId(null);
-    
-    toast({
-      title: "Chats Cleared",
-      description: "All chats have been cleared",
-    });
-  };
-
-  const getCurrentChat = () => {
-    return chats.find((chat) => chat.id === currentChatId);
+    localStorage.removeItem("chats");
+    localStorage.removeItem("currentChatId");
   };
 
   const updateChatTitle = (chatId: string, messages: Message[]) => {
-    // Only update title if this is a new chat with 2 messages (user + assistant's first response)
-    const chat = chats.find((c) => c.id === chatId);
-    
-    if (chat && chat.title === "New Chat" && messages.length >= 2) {
-      const userMessage = messages.find((m) => m.role === "user")?.content || "";
-      // Generate a title based on the first user message
-      const title = userMessage.length > 30 
-        ? `${userMessage.substring(0, 30)}...` 
-        : userMessage;
-      
+    if (messages.length === 0) return;
+
+    const lastMessage = messages[messages.length - 1];
+    if (lastMessage.role === "user") {
+      const title = lastMessage.content.slice(0, 50) + (lastMessage.content.length > 50 ? "..." : "");
       setChats((prevChats) =>
-        prevChats.map((c) =>
-          c.id === chatId ? { ...c, title } : c
+        prevChats.map((chat) =>
+          chat.id === chatId ? { ...chat, title } : chat
         )
       );
     }
+  };
+
+  const stopStreaming = () => {
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+      abortControllerRef.current = null;
+    }
+    setIsLoading(false);
   };
 
   const sendMessage = async (content: string) => {
@@ -211,8 +243,34 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
     
     setIsLoading(true);
 
+    // Create a new AbortController for this request
+    abortControllerRef.current = new AbortController();
+
+    // Create a placeholder assistant message for streaming
+    const assistantMessageId = uuidv4();
+    const assistantMessage: Message = {
+      id: assistantMessageId,
+      role: "assistant",
+      content: "",
+      timestamp: new Date(),
+    };
+
+    // Add empty assistant message to chat for streaming
+    setChats((prevChats) =>
+      prevChats.map((chat) => {
+        if (chat.id === activeChatId) {
+          return {
+            ...chat,
+            messages: [...chat.messages, assistantMessage],
+            updatedAt: new Date(),
+          };
+        }
+        return chat;
+      })
+    );
+
     try {
-      // Using OpenRouter API instead of OpenAI API
+      // Using OpenRouter API for free models with streaming
       const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
         method: "POST",
         headers: {
@@ -228,7 +286,9 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
             content: msg.content,
           })),
           temperature: 0.7,
+          stream: true, // Enable streaming
         }),
+        signal: abortControllerRef.current.signal, // Add abort signal
       });
 
       if (!response.ok) {
@@ -236,36 +296,90 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
         throw new Error(error.error?.message || "Failed to get response from API");
       }
 
-      const data = await response.json();
-      const assistantMessage: Message = {
-        id: uuidv4(),
-        role: "assistant",
-        content: data.choices[0].message.content,
-        timestamp: new Date(),
-      };
+      // Handle streaming response
+      const reader = response.body?.getReader();
+      const decoder = new TextDecoder();
+      let accumulatedContent = "";
 
-      // Add assistant message to chat (but don't re-add the user message)
-      setChats((prevChats) =>
-        prevChats.map((chat) => {
-          if (chat.id === activeChatId) {
-            return {
-              ...chat,
-              messages: [...chat.messages, assistantMessage],
-              updatedAt: new Date(),
-            };
+      if (reader) {
+        while (true) {
+          const { done, value } = await reader.read();
+          
+          if (done) break;
+          
+          const chunk = decoder.decode(value);
+          const lines = chunk.split('\n');
+          
+          for (const line of lines) {
+            if (line.startsWith('data: ')) {
+              const data = line.slice(6);
+              
+              if (data === '[DONE]') {
+                break;
+              }
+              
+              try {
+                const parsed = JSON.parse(data);
+                const delta = parsed.choices[0]?.delta?.content;
+                
+                if (delta) {
+                  accumulatedContent += delta;
+                  
+                  // Update the assistant message with accumulated content
+                  setChats((prevChats) =>
+                    prevChats.map((chat) => {
+                      if (chat.id === activeChatId) {
+                        return {
+                          ...chat,
+                          messages: chat.messages.map((msg) =>
+                            msg.id === assistantMessageId
+                              ? { ...msg, content: accumulatedContent }
+                              : msg
+                          ),
+                          updatedAt: new Date(),
+                        };
+                      }
+                      return chat;
+                    })
+                  );
+                }
+              } catch (e) {
+                // Skip malformed JSON chunks
+                continue;
+              }
+            }
           }
-          return chat;
-        })
-      );
+        }
+        
+        reader.releaseLock();
+      }
 
       // Update chat title if needed
       if (activeChatId) {
         const updatedChat = chats.find((c) => c.id === activeChatId);
         if (updatedChat) {
-          updateChatTitle(activeChatId, [...updatedChat.messages, assistantMessage]);
+          updateChatTitle(activeChatId, [...updatedChat.messages, { ...assistantMessage, content: accumulatedContent }]);
         }
       }
     } catch (error) {
+      // Check if it's an abort error
+      if (error instanceof Error && error.name === 'AbortError') {
+        // Remove the assistant message if aborted
+        setChats((prevChats) =>
+          prevChats.map((chat) => {
+            if (chat.id === activeChatId) {
+              return {
+                ...chat,
+                messages: chat.messages.filter(msg => msg.id !== assistantMessageId),
+                updatedAt: new Date(),
+              };
+            }
+            return chat;
+          })
+        );
+        return;
+      }
+
       console.error("Error sending message:", error);
       toast({
         title: "Error",
@@ -273,18 +387,13 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
         variant: "destructive",
       });
 
-      // Remove the user message if there was an error
+      // Remove the assistant message if there was an error
       setChats((prevChats) =>
         prevChats.map((chat) => {
           if (chat.id === activeChatId) {
             return {
               ...chat,
-              // Keep the message but mark it as failed
-              messages: chat.messages.map(msg => 
-                msg.id === userMessage.id 
-                  ? { ...msg, error: true } 
-                  : msg
-              ),
+              messages: chat.messages.filter(msg => msg.id !== assistantMessageId),
               updatedAt: new Date(),
             };
           }
@@ -293,25 +402,27 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
       );
     } finally {
       setIsLoading(false);
+      abortControllerRef.current = null;
     }
   };
 
-  const contextValue: ChatContextProps = {
+  const value: ChatContextProps = {
     chats,
     currentChatId,
-    apiConfig,
-    setApiConfig,
     isLoading,
+    isLoadingConfig,
+    apiConfig,
     createNewChat,
     selectChat,
     deleteChat,
-    sendMessage,
     clearChats,
-    getCurrentChat,
+    sendMessage,
+    setApiConfig,
+    stopStreaming,
   };
 
   return (
-    <ChatContext.Provider value={contextValue}>
+    <ChatContext.Provider value={value}>
       {children}
     </ChatContext.Provider>
   );

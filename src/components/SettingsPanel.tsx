@@ -1,6 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useChat } from "@/context/ChatContext";
-import { useAuth } from "@/context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -13,53 +12,42 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { LogOut, Moon, Sun } from "lucide-react";
+import { Moon, Sun } from "lucide-react";
 
 const SettingsPanel: React.FC = () => {
   const { apiConfig, setApiConfig } = useChat();
-  const { userProfile, logout } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const [localApiKey, setLocalApiKey] = useState(apiConfig.apiKey);
   const [localModel, setLocalModel] = useState(apiConfig.model);
 
+  // Sync local state with apiConfig changes
+  useEffect(() => {
+    setLocalApiKey(apiConfig.apiKey);
+    // Ensure we always have a valid model, defaulting to Mistral if none is set
+    setLocalModel(apiConfig.model || "mistralai/mistral-small-3.2-24b-instruct:free");
+  }, [apiConfig]);
+
   const handleSave = () => {
+    // Ensure we always save with a valid model, defaulting to Mistral if none is set
+    const modelToSave = localModel || "mistralai/mistral-small-3.2-24b-instruct:free";
+    
+    // If this is a new API key and the model is still the old Gemma default, 
+    // automatically switch to Mistral
+    let finalModel = modelToSave;
+    if (localApiKey !== apiConfig.apiKey && 
+        (modelToSave === "google/gemma-2-9b-it:free" || !modelToSave)) {
+      finalModel = "mistralai/mistral-small-3.2-24b-instruct:free";
+      setLocalModel(finalModel);
+    }
+    
     setApiConfig({
       apiKey: localApiKey,
-      model: localModel,
+      model: finalModel,
     });
   };
 
   return (
     <div className="space-y-6">
-      {/* User profile section */}
-      {userProfile && (
-        <div className="flex flex-col items-center space-y-3 pb-4 border-b">
-          <div className="flex items-center gap-3">
-            <Avatar className="h-10 w-10">
-              {userProfile.picture ? (
-                <AvatarImage src={userProfile.picture} alt={userProfile.name} />
-              ) : (
-                <AvatarFallback>{userProfile.name.charAt(0)}</AvatarFallback>
-              )}
-            </Avatar>
-            <div>
-              <p className="font-medium">{userProfile.name}</p>
-              <p className="text-xs text-muted-foreground">{userProfile.email}</p>
-            </div>
-          </div>
-          <Button 
-            variant="outline" 
-            size="sm" 
-            className="w-full flex items-center gap-2"
-            onClick={logout}
-          >
-            <LogOut size={16} />
-            Sign Out
-          </Button>
-        </div>
-      )}
-
       <div className="space-y-4">
         {/* Theme toggle */}
         <div className="flex items-center justify-between">
@@ -91,7 +79,7 @@ const SettingsPanel: React.FC = () => {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="model">Model</Label>
+          <Label htmlFor="model">AI Model</Label>
           <Select
             value={localModel}
             onValueChange={setLocalModel}
@@ -100,13 +88,24 @@ const SettingsPanel: React.FC = () => {
               <SelectValue placeholder="Select a model" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="openai/gpt-4o-mini">GPT-4o Mini</SelectItem>
-              <SelectItem value="openai/gpt-4o">GPT-4o</SelectItem>
-              <SelectItem value="anthropic/claude-3-opus">Claude 3 Opus</SelectItem>
-              <SelectItem value="anthropic/claude-3-sonnet">Claude 3 Sonnet</SelectItem>
-              <SelectItem value="google/gemini-pro">Gemini Pro</SelectItem>
+              <SelectItem value="mistralai/mistral-small-3.2-24b-instruct:free">Mistral Small 3.2 (24B) (Default)</SelectItem>
+              <SelectItem value="google/gemma-2-9b-it:free">Gemma 2 9B IT</SelectItem>
+              <SelectItem value="nousresearch/deephermes-3-llama-3-8b-preview:free">DeepHermes 3 (Llama 3 8B)</SelectItem>
+              <SelectItem value="deepseek/deepseek-r1-0528-qwen3-8b:free">DeepSeek R1 (Qwen3 8B)</SelectItem>
+              <SelectItem value="rekaai/reka-flash-3:free">Reka Flash 3</SelectItem>
+              <SelectItem value="deepseek/deepseek-r1-distill-llama-70b:free">DeepSeek R1 Distill (Llama 70B)</SelectItem>
+              <SelectItem value="openai/gpt-oss-20b:free">GPT-OSS 20B</SelectItem>
+              <SelectItem value="z-ai/glm-4.5-air:free">GLM 4.5 Air</SelectItem>
+              <SelectItem value="qwen/qwen3-coder:free">Qwen3 Coder</SelectItem>
+              <SelectItem value="moonshotai/kimi-k2:free">Kimi K2</SelectItem>
+              <SelectItem value="tencent/hunyuan-a13b-instruct:free">Hunyuan A13B Instruct</SelectItem>
+              <SelectItem value="moonshotai/kimi-dev-72b:free">Kimi Dev 72B</SelectItem>
+              <SelectItem value="sarvamai/sarvam-m:free">Sarvam M</SelectItem>
             </SelectContent>
           </Select>
+          <p className="text-xs text-muted-foreground">
+            All models are free to use with your OpenRouter API key.
+          </p>
         </div>
 
         <Button className="w-full anime-button" onClick={handleSave}>

@@ -130,4 +130,53 @@
            focus:outline-none focus:ring-2 focus:ring-ring
            placeholder:text-muted-foreground/70;
   }
+
+  /* Streaming animations */
+  .streaming-text {
+    animation: fadeInUp 0.1s ease-out;
+  }
+
+  .typing-cursor {
+    animation: blink 1s infinite;
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(2px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes blink {
+    0%, 50% {
+      opacity: 1;
+    }
+    51%, 100% {
+      opacity: 0;
+    }
+  }
+
+  /* Smooth streaming effect */
+  .streaming-message {
+    transition: all 0.1s ease-out;
+  }
+
+  .streaming-message:last-child {
+    animation: slideInFromBottom 0.3s ease-out;
+  }
+
+  @keyframes slideInFromBottom {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
 }

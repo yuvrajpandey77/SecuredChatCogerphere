@@ -1,16 +1,13 @@
 
 import React from "react";
 import { useChat } from "@/context/ChatContext";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
-import { Check, AlertCircle } from "lucide-react";
+import { AlertCircle } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 
 interface ModelSelectionFormValues {
-  model: string;
   apiKey: string;
 }
 
@@ -19,12 +16,16 @@ interface ModelSelectionProps {
 }
 
 const ModelSelection: React.FC<ModelSelectionProps> = ({ onComplete }) => {
-  const { setApiConfig } = useChat();
+  const { setApiConfig, apiConfig } = useChat();
   const { toast } = useToast();
+  
+  // Don't render if API key is already set
+  if (apiConfig.apiKey) {
+    return null;
+  }
   
   const form = useForm<ModelSelectionFormValues>({
     defaultValues: {
-      model: "openai/gpt-4o-mini",
       apiKey: "",
     },
   });
@@ -38,18 +39,21 @@ const ModelSelection: React.FC<ModelSelectionProps> = ({ onComplete }) => {
       });
       return;
     }
-
+    
     setApiConfig({
       apiKey: data.apiKey,
-      model: data.model,
+      model: "mistralai/mistral-small-3.2-24b-instruct:free", // Default to Mistral
     });
     
     toast({
       title: "Configuration Complete",
-      description: "Your chat is ready to use!",
+      description: "Your chat is ready to use! You can change models in settings.",
     });
     
-    onComplete();
+    // Small delay to ensure state is updated before calling onComplete
+    setTimeout(() => {
+      onComplete();
+    }, 100);
   };
 
   return (
@@ -59,7 +63,7 @@ const ModelSelection: React.FC<ModelSelectionProps> = ({ onComplete }) => {
           <div className="space-y-2">
             <h2 className="text-2xl font-bold">Setup Your Chat</h2>
             <p className="text-muted-foreground">
-              Select a model and enter your OpenRouter API key to continue
+              Enter your OpenRouter API key to start chatting with AI models
             </p>
           </div>
 
@@ -82,82 +86,22 @@ const ModelSelection: React.FC<ModelSelectionProps> = ({ onComplete }) => {
             </div>
           </div>
 
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-              <FormField
-                control={form.control}
-                name="model"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Select Model</FormLabel>
-                    <RadioGroup
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                      className="grid grid-cols-1 gap-2"
-                    >
-                      <FormItem className="flex items-center space-x-3 space-y-0 border rounded-md p-3 cursor-pointer hover:bg-accent">
-                        <FormControl>
-                          <RadioGroupItem value="openai/gpt-4o-mini" />
-                        </FormControl>
-                        <FormLabel className="cursor-pointer font-normal flex justify-between items-center w-full">
-                          <div>
-                            <div className="font-medium">GPT-4o Mini</div>
-                            <div className="text-sm text-muted-foreground">Fast & cost-effective</div>
-                          </div>
-                          {field.value === "openai/gpt-4o-mini" && <Check className="h-4 w-4 text-primary" />}
-                        </FormLabel>
-                      </FormItem>
-                      
-                      <FormItem className="flex items-center space-x-3 space-y-0 border rounded-md p-3 cursor-pointer hover:bg-accent">
-                        <FormControl>
-                          <RadioGroupItem value="openai/gpt-4o" />
-                        </FormControl>
-                        <FormLabel className="cursor-pointer font-normal flex justify-between items-center w-full">
-                          <div>
-                            <div className="font-medium">GPT-4o</div>
-                            <div className="text-sm text-muted-foreground">More capable, higher cost</div>
-                          </div>
-                          {field.value === "openai/gpt-4o" && <Check className="h-4 w-4 text-primary" />}
-                        </FormLabel>
-                      </FormItem>
-                      
-                      <FormItem className="flex items-center space-x-3 space-y-0 border rounded-md p-3 cursor-pointer hover:bg-accent">
-                        <FormControl>
-                          <RadioGroupItem value="anthropic/claude-3-sonnet" />
-                        </FormControl>
-                        <FormLabel className="cursor-pointer font-normal flex justify-between items-center w-full">
-                          <div>
-                            <div className="font-medium">Claude 3 Sonnet</div>
-                            <div className="text-sm text-muted-foreground">Balanced performance</div>
-                          </div>
-                          {field.value === "anthropic/claude-3-sonnet" && <Check className="h-4 w-4 text-primary" />}
-                        </FormLabel>
-                      </FormItem>
-                    </RadioGroup>
-                  </FormItem>
-                )}
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <div className="space-y-2">
+              <label htmlFor="apiKey" className="text-sm font-medium">
+                OpenRouter API Key
+              </label>
+              <Input
+                id="apiKey"
+                placeholder="sk-or-..."
+                type="password"
+                {...form.register('apiKey')}
+                required
               />
+            </div>
 
-              <FormField
-                control={form.control}
-                name="apiKey"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>OpenRouter API Key</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="sk-or-..."
-                        type="password"
-                        {...field}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-
-              <Button type="submit" className="w-full">Start Chatting</Button>
-            </form>
-          </Form>
+            <Button type="submit" className="w-full">Start Chatting</Button>
+          </form>
         </div>
       </div>
     </div>

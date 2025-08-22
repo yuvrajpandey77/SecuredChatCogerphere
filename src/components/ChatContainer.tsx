@@ -15,10 +15,10 @@ const ChatContainer: React.FC<ChatContainerProps> = ({
 }) => {
   const {
     currentChatId,
+    chats,
     createNewChat,
     sendMessage,
     isLoading,
-    getCurrentChat,
   } = useChat();
 
   useEffect(() => {
@@ -27,12 +27,12 @@ const ChatContainer: React.FC<ChatContainerProps> = ({
     }
   }, [currentChatId, createNewChat]);
 
-  const currentChat = getCurrentChat();
+  const currentChat = chats.find(chat => chat.id === currentChatId);
   const messages = currentChat?.messages || [];
 
   return (
     <div className="flex flex-col h-full">
-      <header className="flex items-center p-4 border-b border-border bg-background/80 backdrop-blur-sm">
+      <header className="flex items-center p-2 border-b border-border bg-background/80 backdrop-blur-sm">
         <Button
           variant="ghost"
           size="icon"
@@ -41,9 +41,7 @@ const ChatContainer: React.FC<ChatContainerProps> = ({
         >
           <Menu size={20} />
         </Button>
-        <h2 className="text-lg font-medium">
-          {currentChat?.title || "New Chat"}
-        </h2>
+    
       </header>
 
       <ChatMessages messages={messages} isLoading={isLoading} />

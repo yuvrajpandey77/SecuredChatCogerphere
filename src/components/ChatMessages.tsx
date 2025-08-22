@@ -55,7 +55,7 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({ messages, isLoading }) => {
             <div
               key={message.id}
               className={cn(
-                "w-full",
+                "w-full streaming-message",
                 message.role === "user" ? "flex justify-end" : "flex justify-start"
               )}
             >
@@ -65,27 +65,29 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({ messages, isLoading }) => {
                   message.role === "user" ? "flex-row-reverse space-x-reverse" : ""
                 )}
               >
+                {/* Avatar - only show for AI messages */}
+                {/* Removed bot logo to move response further left */}
+                
+                {/* Message content */}
                 <div
                   className={cn(
-                    "p-2 rounded-full flex items-center justify-center",
+                    "anime-card p-4",
                     message.role === "user"
-                      ? "bg-secondary text-secondary-foreground"
-                      : "bg-primary text-primary-foreground"
+                      ? "bg-secondary/80 border-secondary max-w-[85%] min-w-[45px] text-center" // User messages: better width, minimum width, centered text
+                      : "bg-card/80 max-w-full" // AI messages: left-aligned, full width
                   )}
                 >
-                  {message.role === "user" ? <User size={16} /> : <Bot size={16} />}
-                </div>
-
-                <div
-                  className={cn(
-                    "anime-card p-4 max-w-[85%]",
-                    message.role === "user"
-                      ? "bg-secondary/80 border-secondary"
-                      : "bg-card/80"
-                  )}
-                >
-                  <div className="prose prose-sm max-w-none dark:prose-invert text-left">
-                    <ReactMarkdown>{message.content}</ReactMarkdown>
+                  <div className={cn(
+                    "prose prose-sm max-w-none dark:prose-invert",
+                    message.role === "user" ? "text-left" : "text-left" // Center user text, left-align AI text
+                  )}>
+                    <div className="streaming-text">
+                      <ReactMarkdown>{message.content}</ReactMarkdown>
+                      {/* Add typing cursor for empty assistant messages (streaming) */}
+                      {message.role === "assistant" && message.content === "" && (
+                        <span className="inline-block w-0.5 h-4 bg-primary typing-cursor ml-1"></span>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -93,16 +95,20 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({ messages, isLoading }) => {
           ))
         )}
 
-        {isLoading && (
+        {/* Show "AI is thinking" only when loading and no assistant message exists yet */}
+        {isLoading && !messages.some(msg => msg.role === "assistant") && (
           <div className="flex items-start space-x-4 animate-fade-in">
             <div className="p-2 rounded-full bg-primary text-primary-foreground flex items-center justify-center">
               <Bot size={16} />
             </div>
             <div className="anime-card p-4 max-w-[85%] bg-card/80">
-              <div className="flex space-x-2">
-                <div className="animate-pulse h-2 w-2 bg-muted-foreground/70 rounded-full"></div>
-                <div className="animate-pulse delay-150 h-2 w-2 bg-muted-foreground/70 rounded-full"></div>
-                <div className="animate-pulse delay-300 h-2 w-2 bg-muted-foreground/70 rounded-full"></div>
+              <div className="flex items-center space-x-2">
+                <span className="text-sm text-muted-foreground">AI is thinking</span>
+                <div className="flex space-x-1">
+                  <div className="animate-bounce h-2 w-2 bg-primary rounded-full" style={{ animationDelay: '0ms' }}></div>
+                  <div className="animate-bounce h-2 w-2 bg-primary rounded-full" style={{ animationDelay: '150ms' }}></div>
+                  <div className="animate-bounce h-2 w-2 bg-primary rounded-full" style={{ animationDelay: '300ms' }}></div>
+                </div>
               </div>
             </div>
           </div>
