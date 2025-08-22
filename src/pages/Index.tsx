@@ -15,9 +15,12 @@ const IndexContent = () => {
 
   // Wait for config to load before deciding to show model selection
   useEffect(() => {
-    // Only show model selection after config has loaded AND there's no API key
-    if (!isLoadingConfig && !apiConfig.apiKey) {
-      setShowModelSelection(true);
+    if (!isLoadingConfig) {
+      if (!apiConfig.apiKey) {
+        setShowModelSelection(true);
+      } else {
+        setShowModelSelection(false);
+      }
     }
   }, [isLoadingConfig, apiConfig.apiKey]);
 

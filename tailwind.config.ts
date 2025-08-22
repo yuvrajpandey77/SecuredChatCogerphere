@@ -79,17 +79,18 @@ export default {
 					dark: 'hsl(var(--card-dark))',
 					'dark-foreground': 'hsl(var(--card-dark-foreground))'
 				},
-				animeYellow: {
-					50: '#FEF9E7',
-					100: '#FEF7CD',
-					200: '#FCEEB2',
-					300: '#FDE1D3',
-					400: '#F8D56C',
-					500: '#F5C430',
-					600: '#E1AD1A',
-					700: '#BB8412',
-					800: '#956A10',
-					900: '#7A570E',
+				cogerphereYellow: {
+					'50': '#fefce8',
+					'100': '#fef9c3',
+					'200': '#fef08a',
+					'300': '#fde047',
+					'400': '#facc15',
+					'500': '#eab308',
+					'600': '#ca8a04',
+					'700': '#a16207',
+					'800': '#854d0e',
+					'900': '#713f12',
+					'950': '#422006',
 				},
 				sidebar: {
 					DEFAULT: 'hsl(var(--sidebar-background))',
@@ -145,7 +146,7 @@ export default {
 				'bounce-light': 'bounce-light 2s infinite'
 			},
 			fontFamily: {
-				'anime': ['"Exo 2"', 'sans-serif'],
+				'cogerphere': ['"Exo 2"', 'sans-serif'],
 			}
 		}
 	},

@@ -71,7 +71,7 @@ const SettingsPanel: React.FC = () => {
             placeholder="sk-or-..."
             value={localApiKey}
             onChange={(e) => setLocalApiKey(e.target.value)}
-            className="anime-input"
+            className="cogerphere-input"
           />
           <p className="text-xs text-muted-foreground">
             Your API key is stored locally and never sent to our servers.
@@ -84,7 +84,7 @@ const SettingsPanel: React.FC = () => {
             value={localModel}
             onValueChange={setLocalModel}
           >
-            <SelectTrigger id="model" className="anime-input">
+            <SelectTrigger id="model" className="cogerphere-input">
               <SelectValue placeholder="Select a model" />
             </SelectTrigger>
             <SelectContent>
@@ -108,7 +108,7 @@ const SettingsPanel: React.FC = () => {
           </p>
         </div>
 
-        <Button className="w-full anime-button" onClick={handleSave}>
+        <Button className="w-full cogerphere-button" onClick={handleSave}>
           Save Settings
         </Button>
       </div>

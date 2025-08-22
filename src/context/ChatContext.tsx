@@ -21,9 +21,9 @@ interface ChatContextProps {
 const ChatContext = createContext<ChatContextProps | undefined>(undefined);
 
 const LOCAL_STORAGE_KEYS = {
-  CHATS: "anime-chat-guru-chats",
-  CURRENT_CHAT_ID: "anime-chat-guru-current-chat-id",
-  API_CONFIG: "anime-chat-guru-api-config",
+  CHATS: "cogerphere-chats",
+  CURRENT_CHAT_ID: "cogerphere-current-chat-id",
+  API_CONFIG: "cogerphere-api-config",
 };
 
 export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({

@@ -92,7 +92,7 @@
   }
 
   body {
-    @apply bg-background text-foreground font-anime;
+    @apply bg-background text-foreground font-cogerphere;
     background-image: radial-gradient(
       rgba(251, 241, 199, 0.3) 1px, 
       transparent 1px
@@ -109,26 +109,20 @@
 }
 
 @layer components {
-  .anime-card {
-    @apply bg-card border border-border/50 shadow-md rounded-lg overflow-hidden;
+  .cogerphere-card {
+    @apply bg-card/80 backdrop-blur-sm border border-border/50 rounded-lg shadow-sm;
   }
-  
-  .anime-gradient {
-    @apply bg-gradient-to-br from-animeYellow-100 to-animeYellow-300;
+
+  .cogerphere-gradient {
+    @apply bg-gradient-to-br from-cogerphereYellow-100 to-cogerphereYellow-300;
   }
-  
-  .anime-button {
-    @apply relative overflow-hidden rounded-md inline-flex items-center justify-center px-4 py-2
-           bg-primary text-primary-foreground font-medium transition-all
-           hover:bg-primary/90 hover:shadow-md
-           focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2
-           active:translate-y-0.5;
+
+  .cogerphere-button {
+    @apply bg-primary text-primary-foreground hover:bg-primary/90 transition-all duration-200 transform hover:scale-105 active:scale-95;
   }
-  
-  .anime-input {
-    @apply bg-card border border-border rounded-xl px-3 py-2
-           focus:outline-none focus:ring-2 focus:ring-ring
-           placeholder:text-muted-foreground/70;
+
+  .cogerphere-input {
+    @apply bg-background/80 backdrop-blur-sm border border-border/50 focus:border-primary/50 transition-all duration-200;
   }
 
   /* Streaming animations */

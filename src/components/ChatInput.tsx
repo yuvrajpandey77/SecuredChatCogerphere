@@ -103,7 +103,7 @@ const ChatInput: React.FC<ChatInputProps> = ({
                 : "Please add your OpenRouter API key in settings first"
             }
             disabled={isLoading || isLoadingConfig || !apiConfig.apiKey}
-            className="min-h-32 max-h-96 resize-none anime-input rounded-xl text-base pt-3 pl-3 text-left focus:outline focus:ring-0 "
+            className="min-h-32 max-h-96 resize-none cogerphere-input rounded-xl text-base pt-3 pl-3 text-left focus:outline focus:ring-0 "
             style={{
               height: 'auto',
               minHeight: '8rem', // 32 * 0.25rem = 8rem (increased by 30% from 6rem)

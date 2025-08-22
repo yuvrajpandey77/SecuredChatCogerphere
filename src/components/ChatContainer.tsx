@@ -19,13 +19,15 @@ const ChatContainer: React.FC<ChatContainerProps> = ({
     createNewChat,
     sendMessage,
     isLoading,
+    apiConfig,
   } = useChat();
 
   useEffect(() => {
-    if (!currentChatId) {
+    // Only create a new chat if we have an API key and no current chat
+    if (!currentChatId && apiConfig.apiKey) {
       createNewChat();
     }
-  }, [currentChatId, createNewChat]);
+  }, [currentChatId, createNewChat, apiConfig.apiKey]);
 
   const currentChat = chats.find(chat => chat.id === currentChatId);
   const messages = currentChat?.messages || [];

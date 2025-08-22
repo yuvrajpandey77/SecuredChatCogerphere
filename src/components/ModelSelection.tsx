@@ -50,10 +50,7 @@ const ModelSelection: React.FC<ModelSelectionProps> = ({ onComplete }) => {
       description: "Your chat is ready to use! You can change models in settings.",
     });
     
-    // Small delay to ensure state is updated before calling onComplete
-    setTimeout(() => {
-      onComplete();
-    }, 100);
+    onComplete();
   };
 
   return (

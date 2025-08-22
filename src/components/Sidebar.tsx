@@ -46,7 +46,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isMobileOpen, onCloseMobile }) => {
           <div className="flex items-center">
             <Avatar className="h-8 w-8 mr-2">
               <AvatarImage 
-                src="/lovable-uploads/a4ad0ddd-0884-4ced-9bf7-e01616e43974.png" 
+                src="/cogerphere-logo.png" 
                 alt="Cogerphere Logo"
               />
               <AvatarFallback>CG</AvatarFallback>
@@ -59,7 +59,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isMobileOpen, onCloseMobile }) => {
 
         <Button
           variant="default"
-          className="mb-4 anime-button flex gap-2 items-center bg-primary"
+          className="mb-4 cogerphere-button flex gap-2 items-center bg-primary"
           onClick={handleNewChat}
         >
           <PlusCircle size={16} />

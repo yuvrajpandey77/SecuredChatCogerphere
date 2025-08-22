@@ -31,15 +31,14 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({ messages, isLoading }) => {
                 Start a conversation with AI using your OpenRouter API key.
               </p>
               <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="anime-card p-4">
-                  <h3 className="font-medium mb-2">Example Questions</h3>
+                <div className="cogerphere-card p-4">
+                  <h3 className="font-medium mb-2">Getting Started</h3>
                   <ul className="text-left text-sm space-y-2">
-                    <li>• How can I improve my coding skills?</li>
                     <li>• What are the latest trends in AI and machine learning?</li>
                     <li>• Can you explain the concept of blockchain technology?</li>
                   </ul>
                 </div>
-                <div className="anime-card p-4">
+                <div className="cogerphere-card p-4">
                   <h3 className="font-medium mb-2">Capabilities</h3>
                   <ul className="text-left text-sm space-y-2">
                     <li>• Use your own OpenRouter API key</li>
@@ -71,7 +70,7 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({ messages, isLoading }) => {
                 {/* Message content */}
                 <div
                   className={cn(
-                    "anime-card p-4",
+                    "cogerphere-card p-4",
                     message.role === "user"
                       ? "bg-secondary/80 border-secondary max-w-[85%] min-w-[45px] text-center" // User messages: better width, minimum width, centered text
                       : "bg-card/80 max-w-full" // AI messages: left-aligned, full width
@@ -101,7 +100,7 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({ messages, isLoading }) => {
             <div className="p-2 rounded-full bg-primary text-primary-foreground flex items-center justify-center">
               <Bot size={16} />
             </div>
-            <div className="anime-card p-4 max-w-[85%] bg-card/80">
+            <div className="cogerphere-card p-4 max-w-[85%] bg-card/80">
               <div className="flex items-center space-x-2">
                 <span className="text-sm text-muted-foreground">AI is thinking</span>
                 <div className="flex space-x-1">
