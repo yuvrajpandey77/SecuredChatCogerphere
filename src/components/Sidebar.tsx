@@ -61,13 +61,13 @@ const Sidebar: React.FC<SidebarProps> = ({
       <aside
         className={cn(
           "fixed inset-y-0 left-0 z-50 flex flex-col",
-          "bg-[#000000]",
+          "bg-[#101314]",
           "transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]",
           isMobile
             ? "w-full border-0"
             : collapsed
-              ? "w-[60px] border-r border-[#1a1a1a]"
-              : "w-[200px] border-r border-[#1a1a1a]",
+              ? "w-[60px] border-r border-[#24292D]"
+              : "w-[200px] border-r border-[#24292D]",
           isMobileOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
         )}
       >
@@ -76,7 +76,7 @@ const Sidebar: React.FC<SidebarProps> = ({
           <button
             type="button"
             onClick={onCloseMobile}
-            className="absolute right-4 top-4 flex h-10 w-10 items-center justify-center rounded-full bg-[#16A34A] text-white"
+            className="absolute right-4 top-4 flex h-10 w-10 items-center justify-center rounded-full bg-[#a3c987] text-[#101314]"
           >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
           </button>
@@ -152,7 +152,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                     </button>
                   </TooltipTrigger>
                   {iconOnly && (
-                    <TooltipContent side="right" className="bg-black text-white border-[#333] text-xs">
+                    <TooltipContent side="right" className="bg-[#24292D] text-[#E8F1F6] border-[#495056] text-xs">
                       {item.label}
                     </TooltipContent>
                   )}
@@ -178,7 +178,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                   </NavLink>
                 </TooltipTrigger>
                 {iconOnly && (
-                  <TooltipContent side="right" className="bg-black text-white border-[#333] text-xs">
+                  <TooltipContent side="right" className="bg-[#24292D] text-[#E8F1F6] border-[#495056] text-xs">
                     {item.label}
                   </TooltipContent>
                 )}
@@ -190,7 +190,7 @@ const Sidebar: React.FC<SidebarProps> = ({
         {/* Divider + Recent chats */}
         {showLabels && (
           <>
-            <div className={cn("h-px bg-[#1a1a1a]", isMobile ? "mx-5 mb-4" : "mx-2 mb-3")} />
+            <div className={cn("h-px bg-[#24292D]", isMobile ? "mx-5 mb-4" : "mx-2 mb-3")} />
             <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
               {recentChats.length > 0 && (
                 <>
@@ -205,8 +205,8 @@ const Sidebar: React.FC<SidebarProps> = ({
                           "flex w-full items-center gap-2 rounded-lg text-left text-sm transition-colors duration-200",
                           isMobile ? "px-4 py-2.5" : "px-2 py-1.5",
                           currentChatId === chat.id
-                            ? "bg-[#16A34A]/10 text-[#16A34A]"
-                            : "text-[#666666] hover:text-[#cccccc] hover:bg-[#16A34A]/5"
+                            ? "bg-[#a3c987]/10 text-[#a3c987]"
+                            : "text-[#96A0AB] hover:text-[#E8F1F6] hover:bg-[#a3c987]/10"
                         )}
                       >
                         <span className="truncate">{chat.title}</span>
@@ -242,7 +242,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                 />
               </TooltipTrigger>
               {iconOnly && (
-                <TooltipContent side="right" className="bg-black text-white border-[#333] text-xs">
+                <TooltipContent side="right" className="bg-[#24292D] text-[#E8F1F6] border-[#495056] text-xs">
                   Settings
                 </TooltipContent>
               )}
@@ -258,23 +258,23 @@ const Sidebar: React.FC<SidebarProps> = ({
                   collapsed
                     ? "justify-center px-0 py-2"
                     : isMobile
-                      ? "px-4 py-3 hover:bg-[#16A34A]/5"
-                      : "px-2.5 py-2 hover:bg-[#16A34A]/5"
+                      ? "px-4 py-3 hover:bg-[#a3c987]/5"
+                      : "px-2.5 py-2 hover:bg-[#a3c987]/5"
                 )}
               >
-                <div className={cn("flex shrink-0 items-center justify-center rounded-full bg-[#16A34A] text-xs font-bold text-white", isMobile ? "h-10 w-10 text-sm" : "h-8 w-8")}>
+                <div className={cn("flex shrink-0 items-center justify-center rounded-full bg-[#a3c987] text-xs font-bold text-[#101314]", isMobile ? "h-10 w-10 text-sm" : "h-8 w-8")}>
                   YP
                 </div>
                 {showLabels && (
                   <div className="min-w-0 flex-1">
-                    <p className={cn("truncate font-semibold text-[#cccccc]", isMobile ? "text-base" : "text-sm")}>Yuvraj</p>
-                    <p className={cn("text-[#666666]", isMobile ? "text-sm" : "text-[11px]")}>Free plan</p>
+                    <p className={cn("truncate font-semibold text-[#E8F1F6]", isMobile ? "text-base" : "text-sm")}>Yuvraj</p>
+                    <p className={cn("text-[#96A0AB]", isMobile ? "text-sm" : "text-[11px]")}>Free plan</p>
                   </div>
                 )}
               </div>
             </TooltipTrigger>
             {iconOnly && (
-              <TooltipContent side="right" className="bg-black text-white border-[#333] text-xs">
+              <TooltipContent side="right" className="bg-[#24292D] text-[#E8F1F6] border-[#495056] text-xs">
                 Yuvraj · Free plan
               </TooltipContent>
             )}

@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -87,49 +87,106 @@
   }
 
   /*
-   * App shell — Cursor default dark (projects, notebook, chat, setup).
+   * App shell — Gothic Dark (projects, notebook, chat, setup).
    * html.app-shell-route covers Radix portals; .app-shell covers in-tree UI.
    * Marketing / landing keeps :root purple theme untouched.
+   *
+   * Tokens are HSL triplets (Tailwind v3 hsl(var(--x) / <alpha>) modifiers).
+   * Origin hex: bg #101314 · elevated #1a1d20 · card #24292D · text #E8F1F6 ·
+   * muted #96A0AB · dim #495056 · accent #a3c987 (sage) · rose #c6a6a2.
    */
   html.app-shell-route,
   .app-shell {
     color-scheme: dark;
-    --background: 0 0% 0%;
-    --foreground: 0 0% 88%;
+    --background: 195 11% 7%; /* #101314 */
+    --foreground: 201 44% 94%; /* #E8F1F6 */
 
-    --card: 0 0% 6%;
-    --card-foreground: 0 0% 88%;
+    --card: 207 11% 16%; /* #24292D */
+    --card-foreground: 201 44% 94%;
 
-    --popover: 0 0% 8%;
-    --popover-foreground: 0 0% 88%;
+    --popover: 210 10% 13%; /* #1a1d20+ */
+    --popover-foreground: 201 44% 94%;
 
-    --primary: 142 76% 36%;
-    --primary-foreground: 0 0% 100%;
+    --primary: 95 38% 66%; /* #a3c987 sage */
+    --primary-foreground: 195 11% 7%;
 
-    --secondary: 0 0% 10%;
-    --secondary-foreground: 0 0% 88%;
+    --secondary: 210 10% 11%; /* #1a1d20 */
+    --secondary-foreground: 201 44% 94%;
 
-    --muted: 0 0% 8%;
-    --muted-foreground: 0 0% 45%;
+    --muted: 210 10% 11%; /* #1a1d20 */
+    --muted-foreground: 211 11% 63%; /* #96A0AB */
 
-    --accent: 142 76% 36%;
-    --accent-foreground: 0 0% 88%;
+    --accent: 95 38% 66%; /* sage */
+    --accent-foreground: 195 11% 7%;
 
-    --destructive: 0 72% 48%;
-    --destructive-foreground: 0 0% 98%;
+    --destructive: 7 24% 71%; /* #c6a6a2 muted rose */
+    --destructive-foreground: 195 11% 7%;
 
-    --border: 0 0% 16%;
-    --input: 0 0% 10%;
-    --ring: 142 76% 36%;
+    --border: 200 8% 18%; /* ~ #E8F1F61A over #101314 */
+    --input: 200 8% 14%;
+    --ring: 95 38% 66%;
 
-    --sidebar-background: 0 0% 0%;
-    --sidebar-foreground: 0 0% 88%;
-    --sidebar-primary: 142 76% 36%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 0 0% 10%;
-    --sidebar-accent-foreground: 0 0% 88%;
-    --sidebar-border: 0 0% 12%;
-    --sidebar-ring: 142 76% 36%;
+    --sidebar-background: 195 11% 7%;
+    --sidebar-foreground: 201 44% 94%;
+    --sidebar-primary: 95 38% 66%;
+    --sidebar-primary-foreground: 195 11% 7%;
+    --sidebar-accent: 210 10% 11%;
+    --sidebar-accent-foreground: 201 44% 94%;
+    --sidebar-border: 200 8% 16%;
+    --sidebar-ring: 95 38% 66%;
+
+    --radius: 0.5rem;
+
+    /* Gothic Dark helper tokens */
+    --primary-muted: rgba(163, 201, 135, 0.1);
+    --primary-glow: rgba(163, 201, 135, 0.2);
+    --chart-1: 95 38% 66%; /* #a3c987 */
+    --chart-2: 222 50% 69%; /* #8aa1d8 */
+    --chart-3: 278 47% 73%; /* #c39adb */
+    --chart-4: 43 62% 66%; /* #dec074 */
+    --chart-5: 353 57% 65%; /* #d97580 */
+  }
+
+  /* Light flip — .app-shell.light (Gothic Dark light variant) */
+  html.app-shell-route.light,
+  .app-shell.light {
+    color-scheme: light;
+    --background: 201 44% 94%; /* #E8F1F6 */
+    --foreground: 195 11% 7%; /* #101314 */
+
+    --card: 206 23% 86%; /* #d4dde4 */
+    --card-foreground: 195 11% 7%;
+
+    --popover: 206 23% 89%;
+    --popover-foreground: 195 11% 7%;
+
+    --primary: 103 36% 27%; /* #3a5e2c */
+    --primary-foreground: 201 44% 94%;
+
+    --secondary: 206 23% 86%;
+    --secondary-foreground: 195 11% 7%;
+
+    --muted: 206 23% 86%;
+    --muted-foreground: 208 8% 31%; /* #495056 */
+
+    --accent: 103 36% 27%;
+    --accent-foreground: 201 44% 94%;
+
+    --destructive: 7 24% 40%;
+    --destructive-foreground: 201 44% 94%;
+
+    --border: 208 8% 26%;
+    --input: 208 8% 30%;
+    --ring: 103 36% 27%;
+
+    --sidebar-background: 201 44% 94%;
+    --sidebar-foreground: 195 11% 7%;
+    --sidebar-primary: 103 36% 27%;
+    --sidebar-primary-foreground: 201 44% 94%;
+    --sidebar-accent: 206 23% 86%;
+    --sidebar-accent-foreground: 195 11% 7%;
+    --sidebar-border: 208 8% 30%;
+    --sidebar-ring: 103 36% 27%;
   }
 
   .app-shell .composer-shell {
@@ -180,7 +237,7 @@
   .sidebar-nav-item {
     @apply flex items-center gap-3 rounded-lg transition-all duration-150 ease-in-out;
     padding: 10px 16px;
-    color: hsl(0 0% 53%);
+    color: hsl(211 11% 63%);
     background: transparent;
     cursor: pointer;
   }
@@ -196,8 +253,8 @@
   }
 
   .sidebar-nav-item:hover {
-    background-color: hsl(142 76% 36% / 0.1);
-    color: #16A34A;
+    background-color: rgba(163, 201, 135, 0.1);
+    color: #a3c987;
   }
 
   .sidebar-nav-item--icon-only {
@@ -206,23 +263,23 @@
   }
 
   .sidebar-nav-item--active {
-    background-color: hsl(142 76% 36% / 0.15);
-    color: #16A34A;
+    background-color: rgba(163, 201, 135, 0.15);
+    color: #a3c987;
   }
 
   .sidebar-nav-item--active .sidebar-nav-label {
-    color: #16A34A;
+    color: #a3c987;
     font-weight: 500;
   }
 
   .sidebar-nav-label {
-    color: hsl(0 0% 40%);
+    color: hsl(211 11% 50%);
     font-size: 14px;
     transition: color 200ms ease-in-out;
   }
 
   .sidebar-nav-item:hover .sidebar-nav-label {
-    color: hsl(0 0% 67%);
+    color: hsl(201 44% 85%);
   }
 
   .sidebar-logo-area {
@@ -231,18 +288,18 @@
 
   .sidebar-toggle-btn {
     @apply flex items-center justify-center rounded-lg transition-all duration-200;
-    color: hsl(0 0% 55%);
+    color: hsl(211 11% 55%);
   }
 
   .sidebar-toggle-btn:hover {
-    background-color: hsl(142 76% 36% / 0.12);
-    color: #16A34A;
+    background-color: rgba(163, 201, 135, 0.12);
+    color: #a3c987;
     transform: scale(1.05);
   }
 
   .sidebar-collapsed-toggle {
     @apply absolute inset-0 flex items-center justify-center rounded-lg opacity-0 transition-opacity duration-200;
-    color: hsl(0 0% 55%);
+    color: hsl(211 11% 55%);
   }
 
   .sidebar-logo-area:hover .sidebar-collapsed-toggle {
@@ -254,25 +311,25 @@
   }
 
   .sidebar-collapsed-toggle:hover {
-    background-color: hsl(142 76% 36% / 0.12);
-    color: #16A34A;
+    background-color: rgba(163, 201, 135, 0.12);
+    color: #a3c987;
   }
 
   .sidebar-label {
     @apply text-[11px] font-medium;
-    color: hsl(0 0% 35%);
+    color: hsl(211 11% 45%);
   }
 
   /** ─── Message bubbles ─── */
   .web-message-user {
     @apply ml-auto w-fit max-w-full rounded-3xl px-4 py-3 text-[14px] leading-[1.6];
-    background-color: hsl(0 0% 10%);
-    color: hsl(0 0% 88%);
+    background-color: hsl(207 11% 16%);
+    color: hsl(201 44% 94%);
   }
 
   .web-message-assistant {
     @apply mr-auto w-full max-w-full rounded-3xl px-4 py-3 text-[14px] leading-[1.7];
-    color: hsl(0 0% 78%);
+    color: hsl(211 11% 78%);
   }
 
 
@@ -1055,5 +1112,168 @@
 
   [data-research-workspace][data-mode="focus"] aside {
     border-color: hsl(var(--primary) / 0.25);
+  }
+}
+
+/* ──────────────────────────────────────────────────────────────
+   Gothic Dark extras — scrollbars, gradient text, type scale,
+   animations, atmospheric shadows. Additive; safe to layer on top.
+   ────────────────────────────────────────────────────────────── */
+
+/* Scrollbars — thin, white-translucent */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(232, 241, 246, 0.25) transparent;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(232, 241, 246, 0.18);
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(232, 241, 246, 0.32);
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+.thin-scrollbar::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+.ultra-thin-scrollbar::-webkit-scrollbar {
+  width: 3px;
+  height: 3px;
+}
+
+@layer components {
+  /* ─── Gradient text (white → #e5e7eb → white) ─── */
+  .gothic-gradient-text {
+    background-image: linear-gradient(180deg, #ffffff 0%, #e5e7eb 50%, #ffffff 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .no-text-gradient {
+    background-image: none;
+    color: inherit;
+    -webkit-text-fill-color: currentColor;
+  }
+
+  /* Scoped heading treatment inside the app shell */
+  .app-shell h1,
+  .app-shell h2,
+  .app-shell h3 {
+    background-image: linear-gradient(180deg, #ffffff 0%, #e5e7eb 55%, #ffffff 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+  }
+
+  /* ─── Typography scale ─── */
+  .text-display-lg { font-size: 48px; line-height: 1.1; letter-spacing: -0.02em; }
+  .text-display { font-size: 40px; line-height: 1.15; letter-spacing: -0.02em; }
+  .text-title-xl { font-size: 32px; line-height: 1.2; letter-spacing: -0.015em; }
+  .text-title-lg { font-size: 24px; line-height: 1.25; letter-spacing: -0.01em; }
+  .text-title { font-size: 20px; line-height: 1.3; letter-spacing: -0.01em; }
+  .text-body-lg { font-size: 18px; line-height: 1.6; }
+  .text-body { font-size: 16px; line-height: 1.6; }
+  .text-body-sm { font-size: 14px; line-height: 1.55; }
+  .text-caption { font-size: 13px; line-height: 1.5; }
+  .text-label { font-size: 12px; line-height: 1.5; }
+  .text-micro { font-size: 10px; line-height: 1.4; letter-spacing: 0.02em; }
+  .text-code { font-family: var(--font-jetbrains-mono, "JetBrains Mono", ui-monospace, monospace); font-size: 13px; line-height: 1.6; }
+
+  /* ─── Atmospheric layered shadows ─── */
+  .shadow-atmospheric {
+    box-shadow:
+      0 1px 0 rgba(0, 0, 0, 0.2),
+      0 4px 12px rgba(0, 0, 0, 0.25),
+      0 12px 32px -8px rgba(0, 0, 0, 0.35),
+      0 32px 64px -16px rgba(0, 0, 0, 0.4);
+  }
+
+  .shadow-atmospheric-sm {
+    box-shadow:
+      0 1px 0 rgba(0, 0, 0, 0.18),
+      0 2px 6px rgba(0, 0, 0, 0.22),
+      0 8px 20px -6px rgba(0, 0, 0, 0.32);
+  }
+
+  .shadow-glow {
+    box-shadow: 0 0 0 1px var(--primary-muted), 0 0 24px var(--primary-glow);
+  }
+
+  /* ─── Animations ─── */
+  .animate-fade-in { animation: gdFadeIn 0.4s ease-out both; }
+  .animate-fade-in-up { animation: gdFadeInUp 0.55s cubic-bezier(0.22, 1, 0.36, 1) both; }
+  .animate-slide-in-right { animation: gdSlideInRight 0.45s cubic-bezier(0.22, 1, 0.36, 1) both; }
+  .animate-shimmer { background-size: 200% 100%; animation: gdShimmer 1.6s linear infinite; }
+  .animate-glow-pulse { animation: gdGlowPulse 2.4s ease-in-out infinite; }
+  .animate-marquee { animation: gdMarquee 24s linear infinite; }
+  .animate-falling-star { animation: gdFallingStar 3.5s linear infinite; }
+
+  @keyframes gdFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes gdFadeInUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes gdSlideInRight {
+    from { opacity: 0; transform: translateX(24px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  @keyframes gdShimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+
+  @keyframes gdGlowPulse {
+    0%, 100% { opacity: 0.55; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.04); }
+  }
+
+  @keyframes gdMarquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  @keyframes gdFallingStar {
+    0% { transform: translateY(-10vh) rotate(45deg); opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { transform: translateY(110vh) rotate(45deg); opacity: 0; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .animate-fade-in,
+    .animate-fade-in-up,
+    .animate-slide-in-right,
+    .animate-shimmer,
+    .animate-glow-pulse,
+    .animate-marquee,
+    .animate-falling-star {
+      animation: none !important;
+    }
   }
 }
